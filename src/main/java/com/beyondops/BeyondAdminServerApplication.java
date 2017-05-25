@@ -1,14 +1,18 @@
 package com.beyondops;
 
+import com.google.common.collect.Lists;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.ApiKeyVehicle;
+import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableAsync
@@ -26,10 +30,11 @@ public class BeyondAdminServerApplication {
   @Bean
   public Docket jerseyApi() {
     return new Docket(DocumentationType.SWAGGER_2)
-        .groupName("Beyond Web Server Swagger API")
+        .groupName("beyondops")
         .apiInfo(apiInfo())
         .select()
-        .build();
+        .build()
+        .securitySchemes(Lists.newArrayList(apiKey()));
   }
 
   /**
@@ -45,4 +50,20 @@ public class BeyondAdminServerApplication {
         .build();
   }
 
+  @Bean
+  SecurityConfiguration security() {
+    return new SecurityConfiguration(
+        null,
+        null,
+        null,
+        "Beyond Web Server",
+        "Bearer ",
+        ApiKeyVehicle.HEADER,
+        "Authorization",
+        "," /*scope separator*/);
+  }
+
+  private ApiKey apiKey() {
+    return new ApiKey("Authorization", "Authorization", "header");
+  }
 }

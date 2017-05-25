@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.2.RELEASE'
+        springBootVersion = '1.5.3.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -11,8 +11,8 @@ buildscript {
 }
 
 plugins {
-    id 'nu.studer.jooq' version '2.0.2'
-    id "org.flywaydb.flyway" version "4.0.3"
+    id 'nu.studer.jooq' version '2.0.6'
+    id "org.flywaydb.flyway" version "4.2.0"
 }
 
 apply plugin: 'java'
@@ -42,16 +42,16 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-data-ldap')
     compile('org.springframework.boot:spring-boot-starter-data-redis')
-    compile('org.flywaydb:flyway-core:4.0.3')
+    compile('org.flywaydb:flyway-core:4.2.0')
     compile('org.springframework.boot:spring-boot-starter-jersey')
     compile('org.springframework.boot:spring-boot-starter-jooq')
     compile('org.springframework.boot:spring-boot-starter-mail')
     compile('org.springframework.boot:spring-boot-starter-web')
 
-    compile("com.google.guava:guava:19.0")
-    compile("io.jsonwebtoken:jjwt:0.6.0")
+    compile("com.google.guava:guava:22.0")
+    compile("io.jsonwebtoken:jjwt:0.7.0")
     compile("commons-codec:commons-codec:1.10")
-    compile("com.google.code.gson:gson:2.7")
+    compile("com.google.code.gson:gson:2.8.0")
     compile('org.glassfish.jersey.ext:jersey-bean-validation')
     compile('com.unboundid:unboundid-ldapsdk')
 
@@ -59,9 +59,9 @@ dependencies {
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     jooqRuntime 'mysql:mysql-connector-java'
-    compile('io.swagger:swagger-jersey2-jaxrs:1.5.12')
-    compile('io.springfox:springfox-swagger-ui:2.6.1')
-    compile('io.springfox:springfox-swagger2:2.6.1')
+    compile('io.swagger:swagger-jersey2-jaxrs:1.5.13')
+    compile('io.springfox:springfox-swagger-ui:2.5.0')
+    compile('io.springfox:springfox-swagger2:2.7.0')
 }
 
 //JOOQ source
