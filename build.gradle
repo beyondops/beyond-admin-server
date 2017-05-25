@@ -1,0 +1,142 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id 'nu.studer.jooq' version '2.0.2'
+    id "org.flywaydb.flyway" version "4.0.3"
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'war'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+
+war {
+    baseName = 'beyond-admin-server'
+    version = '0.0.1-SNAPSHOT'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    providedRuntime
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-data-ldap')
+    compile('org.springframework.boot:spring-boot-starter-data-redis')
+    compile('org.flywaydb:flyway-core:4.0.3')
+    compile('org.springframework.boot:spring-boot-starter-jersey')
+    compile('org.springframework.boot:spring-boot-starter-jooq')
+    compile('org.springframework.boot:spring-boot-starter-mail')
+    compile('org.springframework.boot:spring-boot-starter-web')
+
+    compile("com.google.guava:guava:19.0")
+    compile("io.jsonwebtoken:jjwt:0.6.0")
+    compile("commons-codec:commons-codec:1.10")
+    compile("com.google.code.gson:gson:2.7")
+    compile('org.glassfish.jersey.ext:jersey-bean-validation')
+    compile('com.unboundid:unboundid-ldapsdk')
+
+    runtime('mysql:mysql-connector-java')
+    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    jooqRuntime 'mysql:mysql-connector-java'
+    compile('io.swagger:swagger-jersey2-jaxrs:1.5.12')
+    compile('io.springfox:springfox-swagger-ui:2.6.1')
+    compile('io.springfox:springfox-swagger2:2.6.1')
+}
+
+//JOOQ source
+sourceSets {
+    main {
+        java { srcDirs += "generated-sources/jooq/" }
+    }
+}
+
+ext {
+    //Profile selection, using command：gradle build -Pprofile=production
+    profile = project.hasProperty("profile") ? ("-" + project.profile) : "-dev"
+    profilePath = projectDir.toString() + "/src/main/resources/application" + profile + ".properties"
+    println "Using profile: " + profilePath
+    profileProp = new Properties()
+    profileProp.load(new FileReader(profilePath))
+
+    if (profile == "") {
+        println "Delete jooq directory"
+        delete 'generated-sources/jooq'
+    }
+}
+
+flyway {
+    url = profileProp.getProperty("spring.datasource.url")
+    user = profileProp.getProperty("spring.datasource.username")
+    password = profileProp.getProperty("spring.datasource.password")
+}
+
+//JOOQ Code Generator：gradle generateBeyondopsJooqSchemaSource
+jooq {
+    beyondops(sourceSets.main) {
+        jdbc {
+            driver = 'com.mysql.jdbc.Driver'
+            url = profileProp.getProperty("spring.datasource.url")
+            user = profileProp.getProperty("spring.datasource.username")
+            password = profileProp.getProperty("spring.datasource.password")
+            schema = profileProp.getProperty("spring.datasource.name")
+        }
+        generator {
+            name = 'org.jooq.util.DefaultGenerator'
+            database {
+                name = 'org.jooq.util.mysql.MySQLDatabase'
+                inputSchema = profileProp.getProperty("spring.datasource.name")
+            }
+            generate {
+                relations = true
+                deprecated = false
+                records = true
+                pojos = true
+                daos = true
+                immutablePojos = false
+                fluentSetters = true
+            }
+            target {
+                packageName = 'com.beyondops.jooq.model'
+                directory = "generated-sources/jooq"
+            }
+        }
+    }
+}
+
+checkstyle {
+    toolVersion = "7.5.1"
+    configFile = file('checkstyle.xml')
+    ignoreFailures = false
+}
+checkstyleMain {
+    source = "src/main/java"
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+    excludeFilter = file("$rootProject.projectDir/findbugs.xml")
+}
