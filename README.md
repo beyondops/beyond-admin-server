@@ -41,6 +41,6 @@ java -jar -Dspring.profiles.active=production build/libs/beyond-admin-server-0.0
 
 ### API
 
-- swagger: [http://localhost:8080/swagger-ui.html]
+- swagger: (http://localhost:8080/swagger-ui.html)
 
 

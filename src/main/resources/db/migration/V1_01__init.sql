@@ -50,7 +50,7 @@ CREATE TABLE `sys_api` (
   `api_url`    VARCHAR(100) NOT NULL
   COMMENT 'Api url',
   `api_method` INT          NOT NULL
-  COMMENT 'Api method, 1:POST, 2:GET, 3:PUT, 4:PATCH, 5:DELETE',
+  COMMENT 'Api method, 1:POST, 2:GET, 3:PUT, 4:PATCH, 5:DELETE, 6:HEAD, 7:OPTIONS',
   `api_config` VARCHAR(200)          DEFAULT NULL
   COMMENT 'Api config',
   `created_at` DATETIME     NOT NULL

@@ -43,25 +43,3 @@ INSERT INTO sys_user_role
 VALUES
   (1, 1, NOW(), NOW());
 
-INSERT INTO sys_api (
-  api_name, api_url, api_method, api_config, created_at, updated_at
-) VALUES
-  ('Refresh Authentication Token', '/sysuser/sysuser/refreshToken/{rememberMe}', 2, NULL, now(),
-   now());
-
-
-DELETE FROM sys_role_api
-WHERE role_id = 1;
-
-INSERT INTO sys_role_api (
-  api_id,
-  role_id,
-  created_at,
-  updated_at
-)
-  SELECT
-    id,
-    1,
-    NOW(),
-    NOW()
-  FROM sys_api;

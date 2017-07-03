@@ -1,8 +1,11 @@
 package com.beyondops;
 
+import com.beyondops.admin.config.JerseyAdminApiConfig;
+import com.beyondops.admin.service.SysApiService;
 import com.google.common.collect.Lists;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -21,7 +24,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class BeyondAdminServerApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(BeyondAdminServerApplication.class, args);
+    ConfigurableApplicationContext context = SpringApplication
+        .run(BeyondAdminServerApplication.class, args);
+    //Scan the api and init api resources.
+    context.getBean(SysApiService.class)
+        .initApiResource(context.getBean(JerseyAdminApiConfig.class));
   }
 
   /**

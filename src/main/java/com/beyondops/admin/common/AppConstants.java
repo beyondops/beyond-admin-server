@@ -1,5 +1,7 @@
 package com.beyondops.admin.common;
 
+import java.util.HashMap;
+
 /**
  * Created by caiqinzhou@gmail.com on 2017/1/12.
  */
@@ -25,4 +27,15 @@ public class AppConstants {
   public static final int USER_STATUS_VALID = 1;
 
   public static final String SWAGGER_JSON = "swagger.json";
+
+  public static final HashMap<String, Integer> HTTP_METHOD = new HashMap() {{
+    //1:POST, 2:GET, 3:PUT, 4:PATCH, 5:DELETE, 6:HEAD, 7:OPTIONS
+    this.put("POST", 1);
+    this.put("GET", 2);
+    this.put("PUT", 3);
+    this.put("PATCH", 4);
+    this.put("DELETE", 5);
+    this.put("HEAD", 6);
+    this.put("OPTIONS", 7);
+  }};
 }
